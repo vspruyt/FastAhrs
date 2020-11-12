@@ -15,6 +15,7 @@ It contains:
 - Outlier removal for accelerometer values to deal with fast motion
 - Advanced accelerometer calibration (12 parameters; 9 for scaling, 3 for offsets)
 - Support to drive pin output for indicator leds showing anomaly and initialization status
+- Boiler plate code to write and read calibration to/from EEPROM on the Teensy
 
 This repo also contains a Python notebook to perform accelerometer calibration, by posing 
 it as an optimization problem. The advantage of this approach is that you don't need to hold

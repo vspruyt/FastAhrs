@@ -1,6 +1,6 @@
 // Robust 400Hz Atitude and Heading (AHRS) estimation for the AdaFruit 
 // "Precision NXP 9-DOF breakout board - FXOS8700 + FXAS21002"
-// This libraries solves a bunch of issues that come with the default AdaFruit
+// This library solves a bunch of issues that come with the default AdaFruit
 // libraries, and uses the latest updates of the MadgWick filter that few people 
 // seem to be aware of.
 
@@ -11,6 +11,7 @@
 // - Outlier removal for accelerometer values to deal with fast motion
 // - Advanced accelerometer calibration (12 parameters; 9 for scaling, 3 for offsets)
 // - Support to drive pin output for indicator leds showing anomaly and initialization status
+// - Boiler plate code to write and read calibration to/from EEPROM on the Teensy
 
 // To use this, you must calibrate the sensors, and write the calibration parameters
 // to EEPROM. Check the calibrate_accel, calibrate_gyro and calibrate_magnetometer samples
