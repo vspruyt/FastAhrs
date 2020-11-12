@@ -265,104 +265,6 @@ void loop() {
   // reset the counter
   counter = 0;
 
-  // print the heading, pitch and roll   
-  // Serial.print("\nMahony: ");
-  // Serial.print(filter.getRoll());
-  // Serial.print(", ");
-  // Serial.print(filter.getPitch());
-  // Serial.print(", ");
-  // Serial.println(filter.getYaw()); 
-
-  
-
-  // float qw, qx, qy, qz;
-  // filter.getQuaternion(&qw, &qx, &qy, &qz);
-  // Serial.print("Quaternion: ");
-  // Serial.print(qw, 4);
-  // Serial.print(", ");
-  // Serial.print(qx, 4);
-  // Serial.print(", ");
-  // Serial.print(qy, 4);
-  // Serial.print(", ");
-  // Serial.println(qz, 4);  
-
-  // if(counter < 200){    
-
-  // Serial.print("COUNTER: ");
-  // Serial.println(counter);
-
-  // Serial.print("Sample period: ");
-  // Serial.println(samplePeriod, 4);
-
-  // Serial.print(" / Initialized: ");
-  // Serial.print(accelerometerValidator.is_initialized);
-  // Serial.print(" / Rejecting acc: ");
-  // Serial.print(accelerometerValidator.is_rejecting_magnitude);
-  // Serial.print(" / Rejecting std: ");
-  // Serial.println(accelerometerValidator.is_rejecting_variance);
-
-  
-  // Serial.print(" / Initialized: ");
-  // Serial.print(magnetometerValidator.is_initialized);
-  // Serial.print(" / Rejecting mag: ");
-  // Serial.print(magnetometerValidator.is_rejecting_magnitude);
-  // Serial.print(" / Rejecting std: ");
-  // Serial.println(magnetometerValidator.is_rejecting_variance);
-
-  // Serial.print("Fusion Bias Estimation: ");
-  // Serial.print(fusionBias.stationaryTimer, 4);
-  // Serial.print(" / ");
-  // Serial.println(fusionBias.threshold, 4);
-  // Serial.println(FusionBiasIsActive(&fusionBias));
-  // Serial.print(" / ");
-  // Serial.println(fusionBias.samplePeriod, 4);
-
-  // Serial.print("Fusion bias:");
-  // Serial.print(d1, 4);
-  // Serial.print(", ");
-  // Serial.print(d2, 4);
-  // Serial.print(", ");
-  // Serial.println(d3, 4);
-  // Serial.println("");
-
-  // Serial.print("Gyroscope:");
-  // Serial.print(online_recalibrated_gyro.axis.x, 4);
-  // Serial.print(" <> ");
-  // Serial.println(validgyro.axis.x, 4);
-  // Serial.print(online_recalibrated_gyro.axis.y, 4);
-  // Serial.print(" <> ");
-  // Serial.println(validgyro.axis.y, 4);
-  // Serial.print(online_recalibrated_gyro.axis.z, 4);
-  // Serial.print(" <> ");
-  // Serial.println(validgyro.axis.z, 4);
-  // Serial.println(FusionBiasIsActive(&fusionBias));
-
-  // Serial.print("Magnetometer:");
-  // Serial.print(validmag.axis.x, 4);
-  // Serial.print(", ");
-  // Serial.print(validmag.axis.y, 4);
-  // Serial.print(", ");
-  // Serial.println(validmag.axis.z, 4);
-
-  // Serial.println(sqrt(validmag.axis.x*validmag.axis.x + validmag.axis.y*validmag.axis.y + validmag.axis.z*validmag.axis.z), 4);
-
-
-//   Serial.print("Accelerometer:");
-// Serial.print(validaccel.axis.x, 4);
-// Serial.print(", ");
-// Serial.print(validaccel.axis.y, 4);
-// Serial.print(", ");
-// Serial.println(validaccel.axis.z, 4);
-// Serial.println(sqrt(validaccel.axis.x*validaccel.axis.x + validaccel.axis.y*validaccel.axis.y + validaccel.axis.z*validaccel.axis.z), 4);
-
-  // Serial.print("Madgwick: ");
-  // FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(FusionAhrsGetQuaternion(&fusionAhrs));
-  // Serial.print(eulerAngles.angle.roll);
-  // Serial.print(", ");
-  // Serial.print(eulerAngles.angle.pitch);
-  // Serial.print(", ");
-  // Serial.println(eulerAngles.angle.yaw); 
-
   Serial.print("Orientation: ");
   FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(FusionAhrsGetQuaternion(&fusionAhrs));
   Serial.print(eulerAngles.angle.yaw);
@@ -379,14 +281,6 @@ void loop() {
   // Serial.print(", ");
   // Serial.print(quaternion.element.y, 5);
   // Serial.print(", ");
-  // Serial.println(quaternion.element.z, 5);  
-  
-  
-  // }
-  // else
-  // {
-  //   counter = 1000;
-  // }
-  
+  // Serial.println(quaternion.element.z, 5);      
 
 }
