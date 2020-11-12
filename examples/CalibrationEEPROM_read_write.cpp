@@ -10,7 +10,7 @@ CalibrationEEPROMwriter calibration_writer;
 
 // Set to false if you only want to read and print the current calibration,
 // from EEPROM, but don't want to write any new calibration data to EEPROM.
-#define WRITE (true)
+#define WRITE (false)
 
 void setup() {
   Serial.begin(115200);
@@ -30,13 +30,10 @@ void setup() {
   if(WRITE){
     // MAGNETOMETER
     // -------------
-    // Comment out the magnetometer lines if they are already in EEPROM
-    // because you used the MotionCal tool. This code will just read out
-    // those values and use them.
-    // calibration_data.mag_offset = {2.1919040680, -37.6589355469, -70.3387680054};
-    // calibration_data.mag_scaling = {0.9850856662, -0.0284438953, 0.0098983943,
-    //                                 -0.0284438953, 0.9925758839, 0.0037531406,
-    //                                 0.0098983943, 0.0037531406, 1.0236954689};
+    calibration_data.mag_offset = {2.6268424988, -43.6149749756, -45.4754714966};
+    calibration_data.mag_scaling = {0.9767574072, -0.0219166204, 0.0224733353,
+                                    -0.0219166204, 0.9923714995, 0.0015654713,
+                                    0.0224733353, 0.0015654713, 1.0326985121};
 
     // GYROSCOPE
     // ---------
