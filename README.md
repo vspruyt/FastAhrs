@@ -1,8 +1,10 @@
 # FastAHRS
 
+Part of my self balancing robot project.
+
 Robust 400Hz Atitude and Heading (AHRS) estimation for the AdaFruit 
-"Precision NXP 9-DOF breakout board - FXOS8700 + FXAS21002"
-This libraries solves a bunch of issues that come with the default AdaFruit
+"Precision NXP 9-DOF breakout board - FXOS8700 + FXAS21002".
+This library solves a bunch of issues that come with the default AdaFruit
 libraries, and uses the latest updates of the MadgWick filter that few people 
 seem to be aware of.
 
