@@ -14,6 +14,11 @@ It contains:
 - Advanced accelerometer calibration (12 parameters; 9 for scaling, 3 for offsets)
 - Support to drive pin output for indicator leds showing anomaly and initialization status
 
+This repo also contains a Python notebook to perform accelerometer calibration, by posing 
+it as an optimization problem. The advantage of this approach is that you don't need to hold
+the IMU in any specific orientation, making calibration much easier and accurate than with 
+most other techniques.
+
 To use this, you must calibrate the sensors, and write the calibration parameters
 to EEPROM. Check the calibrate_accel, calibrate_gyro and calibrate_magnetometer samples
 in the 'examples' folder to obtain the calibration parameters.
