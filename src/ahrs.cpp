@@ -46,10 +46,15 @@
 // Adafruit_FXOS8700.cpp: Line 184 (use 0x15 for 100Hz, 0x05 for 400Hz)
 // Adafruit_FXAS21002C.cpp: Line 203 (use 0x0E for 100Hz, 0x06 for 400Hz)
 
+#include <Wire.h>
 #include <Adafruit_FXAS21002C.h>
 #include <Adafruit_FXOS8700.h>
 #include <Fusion.h>
 #include "CalibrationEEPROMwriter.h"
+
+// The 7-bit I2C address of this slave device, so that a master device can
+// query the sensor orientation that will be calculated
+#define I2C_SLAVE_ADDRESS (0x55) // 1010101
 
 // Configure the indicator led output pins
 #define MAG_INITIALIZED_LED_OUTPUT_PIN 11
@@ -103,6 +108,9 @@ SensorCalibration calibration_data;
 
 float samplePeriod = 1.0f/FILTER_UPDATE_RATE_HZ;
 uint32_t timestamp;
+
+FusionQuaternion sensor_orientation;
+bool new_sensor_orientation_estimate_available = false;
 
 bool init_sensors(void) {
   // We set the gyro range to 1000dps instead of the Adafruit default of 250dps, to cope with fast motion.
@@ -164,7 +172,21 @@ void set_indicator_leds(const SensorAnomalyRejector& magnetometerValidator, cons
     digitalWrite(ACC_BAD_MAGNITUDE_LED_OUTPUT_PIN, validaccel.axis.x==0 && validaccel.axis.y==0 && validaccel.axis.z==0);
 }
 
+void send_quaternion_over_i2c(){
+  while(!new_sensor_orientation_estimate_available)
+    yield();
+
+  Wire1.write((uint8_t*) sensor_orientation.array, sizeof(sensor_orientation.array));
+
+  new_sensor_orientation_estimate_available = false;
+}
+
 void setup() {
+
+  // Configure this device as an I2C slave that can reply to requests for data
+  Wire1.begin(I2C_SLAVE_ADDRESS);
+  Wire1.setClock(400000); // 400KHz
+  Wire1.onRequest(send_quaternion_over_i2c);
 
   pinMode(MAG_INITIALIZED_LED_OUTPUT_PIN, OUTPUT);
   digitalWrite(MAG_INITIALIZED_LED_OUTPUT_PIN, LOW);
@@ -179,7 +201,6 @@ void setup() {
   digitalWrite(ACC_BAD_MAGNITUDE_LED_OUTPUT_PIN, LOW);
 
   Serial.begin(115200);
-  // while (!Serial) yield();
 
   if (!calibration_writer.begin()) {
     Serial.println("Failed to initialize calibration helper");
@@ -240,6 +261,10 @@ void loop() {
   // Update AHRS algorithm
   FusionAhrsUpdate(&fusionAhrs, online_recalibrated_gyro, {validaccel.axis.x/9.81, validaccel.axis.y/9.81, validaccel.axis.z/9.81}, {validmag.axis.x, validmag.axis.y, validmag.axis.z}, samplePeriod);
 
+  // Copy the result so we can send it over the wire
+  sensor_orientation = FusionAhrsGetQuaternion(&fusionAhrs);
+  new_sensor_orientation_estimate_available = true;
+
   // Set the indicator leds
   set_indicator_leds(magnetometerValidator, validaccel);
 
@@ -249,9 +274,9 @@ void loop() {
   
   // reset the counter
   counter = 0;
-
+  
   Serial.print("Orientation: ");
-  FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(FusionAhrsGetQuaternion(&fusionAhrs));
+  FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(sensor_orientation);
   Serial.print(eulerAngles.angle.yaw);
   Serial.print(" ");
   Serial.print(eulerAngles.angle.pitch);
