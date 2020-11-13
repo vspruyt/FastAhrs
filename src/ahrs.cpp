@@ -158,25 +158,10 @@ FusionVector3 validate_acceleration(float x, float y, float z, float threshold){
 }
 
 void set_indicator_leds(const SensorAnomalyRejector& magnetometerValidator, const FusionVector3& validaccel){
-    if(magnetometerValidator.is_initialized)
-      digitalWrite(MAG_INITIALIZED_LED_OUTPUT_PIN, HIGH);      
-    else
-      digitalWrite(MAG_INITIALIZED_LED_OUTPUT_PIN, LOW);
-    
-    if(magnetometerValidator.is_rejecting_magnitude)   
-      digitalWrite(MAG_BAD_MAGNITUDE_LED_OUTPUT_PIN, HIGH);      
-    else
-      digitalWrite(MAG_BAD_MAGNITUDE_LED_OUTPUT_PIN, LOW);  
-
-  if(magnetometerValidator.is_rejecting_variance)
-      digitalWrite(MAG_BAD_VARIANCE_LED_OUTPUT_PIN, HIGH);  
-  else
-      digitalWrite(MAG_BAD_VARIANCE_LED_OUTPUT_PIN, LOW);  
-
-  if(validaccel.axis.x==0 && validaccel.axis.y==0 && validaccel.axis.z==0)
-      digitalWrite(ACC_BAD_MAGNITUDE_LED_OUTPUT_PIN, HIGH);      
-  else
-      digitalWrite(ACC_BAD_MAGNITUDE_LED_OUTPUT_PIN, LOW);    
+    digitalWrite(MAG_INITIALIZED_LED_OUTPUT_PIN, magnetometerValidator.is_initialized);      
+    digitalWrite(MAG_BAD_MAGNITUDE_LED_OUTPUT_PIN, magnetometerValidator.is_rejecting_magnitude);      
+    digitalWrite(MAG_BAD_VARIANCE_LED_OUTPUT_PIN, magnetometerValidator.is_rejecting_variance);  
+    digitalWrite(ACC_BAD_MAGNITUDE_LED_OUTPUT_PIN, validaccel.axis.x==0 && validaccel.axis.y==0 && validaccel.axis.z==0);
 }
 
 void setup() {
