@@ -52,9 +52,16 @@
 #include <Fusion.h>
 #include "CalibrationEEPROMwriter.h"
 
-// The 7-bit I2C address of this slave device, so that a master device can
-// query the sensor orientation that will be calculated
-#define I2C_SLAVE_ADDRESS (0x55) // 1010101
+// Baud rate for output serial where we write the quaternion that represents the 
+// sensor orientation.
+// In total, we write:
+// - 2 header bytes to indicate start of transmission
+// - 4 quaternion floats, each represented by 4 bytes 
+// - Total: 4*4+2=18 bytes 
+// This corresponds to 18*8=144 bits, which we want to send over 400 times per second.
+// Hence, we need a baud rate of at least 144*400=57.6kbps
+#define OUTPUT_BAUDRATE 115200
+#define OUTPUT_SERIAL Serial5
 
 // Configure the indicator led output pins
 #define MAG_INITIALIZED_LED_OUTPUT_PIN 11
@@ -108,9 +115,6 @@ SensorCalibration calibration_data;
 
 float samplePeriod = 1.0f/FILTER_UPDATE_RATE_HZ;
 uint32_t timestamp;
-
-FusionQuaternion sensor_orientation;
-bool new_sensor_orientation_estimate_available = false;
 
 bool init_sensors(void) {
   // We set the gyro range to 1000dps instead of the Adafruit default of 250dps, to cope with fast motion.
@@ -172,22 +176,12 @@ void set_indicator_leds(const SensorAnomalyRejector& magnetometerValidator, cons
     digitalWrite(ACC_BAD_MAGNITUDE_LED_OUTPUT_PIN, validaccel.axis.x==0 && validaccel.axis.y==0 && validaccel.axis.z==0);
 }
 
-void send_quaternion_over_i2c(){
-  while(!new_sensor_orientation_estimate_available)
-    yield();
-
-  Wire1.write((uint8_t*) sensor_orientation.array, sizeof(sensor_orientation.array));
-
-  new_sensor_orientation_estimate_available = false;
-}
-
 void setup() {
 
-  // Configure this device as an I2C slave that can reply to requests for data
-  Wire1.begin(I2C_SLAVE_ADDRESS);
-  Wire1.setClock(400000); // 400KHz
-  Wire1.onRequest(send_quaternion_over_i2c);
+  // Configure the output serial port
+  OUTPUT_SERIAL.begin(OUTPUT_BAUDRATE);  
 
+  // Initialize the LED indicators
   pinMode(MAG_INITIALIZED_LED_OUTPUT_PIN, OUTPUT);
   digitalWrite(MAG_INITIALIZED_LED_OUTPUT_PIN, LOW);
 
@@ -261,9 +255,12 @@ void loop() {
   // Update AHRS algorithm
   FusionAhrsUpdate(&fusionAhrs, online_recalibrated_gyro, {validaccel.axis.x/9.81, validaccel.axis.y/9.81, validaccel.axis.z/9.81}, {validmag.axis.x, validmag.axis.y, validmag.axis.z}, samplePeriod);
 
-  // Copy the result so we can send it over the wire
-  sensor_orientation = FusionAhrsGetQuaternion(&fusionAhrs);
-  new_sensor_orientation_estimate_available = true;
+  // Get the sensor orientation as a quaternion
+  FusionQuaternion sensor_orientation = FusionAhrsGetQuaternion(&fusionAhrs);
+
+  // Write the quaternion to the Serial output port
+  OUTPUT_SERIAL.print("\001\002"); // Start-of-header and start-of-text bytes
+  OUTPUT_SERIAL.write((uint8_t*) sensor_orientation.array, sizeof(sensor_orientation.array));  
 
   // Set the indicator leds
   set_indicator_leds(magnetometerValidator, validaccel);
