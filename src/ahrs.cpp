@@ -60,7 +60,7 @@
 // - Total: 4*4+2=18 bytes 
 // This corresponds to 18*8=144 bits, which we want to send over 400 times per second.
 // Hence, we need a baud rate of at least 144*400=57.6kbps
-#define OUTPUT_BAUDRATE 115200
+#define OUTPUT_BAUDRATE 2000000
 #define OUTPUT_SERIAL Serial5
 
 // Configure the indicator led output pins
