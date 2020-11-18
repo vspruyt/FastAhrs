@@ -17,6 +17,9 @@ It contains:
 - Support to drive pin output for indicator leds showing anomaly and initialization status
 - Boiler plate code to write and read calibration to/from EEPROM on the Teensy
 
+Usage:
+![alt text](https://github.com/vspruyt/FastAhrs/raw/main/schema_pic.jpg "Example use")
+
 This repo also contains a Python notebook to perform accelerometer calibration, by posing 
 it as an optimization problem. The advantage of this approach is that you don't need to hold
 the IMU in any specific orientation, making calibration much easier and accurate than with 
