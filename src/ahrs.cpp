@@ -60,7 +60,7 @@
 // - Total: 4*4+2=18 bytes 
 // This corresponds to 18*8=144 bits, which we want to send over 400 times per second.
 // Hence, we need a baud rate of at least 144*400=57.6kbps
-#define OUTPUT_BAUDRATE 2000000
+#define OUTPUT_BAUDRATE 115200
 #define OUTPUT_SERIAL Serial5
 
 // Configure the indicator led output pins
@@ -178,6 +178,8 @@ void set_indicator_leds(const SensorAnomalyRejector& magnetometerValidator, cons
 
 void setup() {
 
+  digitalWrite(13, HIGH);    // Light up the internal led to show it's game on
+  delay(20);
   // Configure the output serial port
   OUTPUT_SERIAL.begin(OUTPUT_BAUDRATE);  
 
@@ -236,6 +238,9 @@ void loop() {
   if (time_diff < (1000000 / FILTER_UPDATE_RATE_HZ)) return;
   samplePeriod = time_diff/1000000.0;
   timestamp = curr_time;
+  
+  if(samplePeriod != 0.0025)
+    Serial.println(samplePeriod, 4);
 
   // Read the motion sensors  
   imu_gyroscope.getEvent(&gyro); 
@@ -272,14 +277,16 @@ void loop() {
   // reset the counter
   counter = 0;
   
-  Serial.print("Orientation: ");
-  FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(sensor_orientation);
-  Serial.print(eulerAngles.angle.yaw);
-  Serial.print(" ");
-  Serial.print(eulerAngles.angle.pitch);
-  Serial.print(" ");
-  Serial.println(eulerAngles.angle.roll); 
+  // Serial.print("Orientation: ");
+  // FusionEulerAngles eulerAngles = FusionQuaternionToEulerAngles(sensor_orientation);
+  // Serial.print(eulerAngles.angle.yaw);
+  // Serial.print(" ");
+  // Serial.print(eulerAngles.angle.pitch);
+  // Serial.print(" ");
+  // Serial.println(eulerAngles.angle.roll); 
 
+  // Print out the quaternion as below, and visit https://adafruit-3dmodel-viewer.glitch.me/
+  // to visualize it in 3D
   // FusionQuaternion quaternion = FusionAhrsGetQuaternion(&fusionAhrs);  
   // Serial.print("Quaternion: ");
   // Serial.print(quaternion.element.w, 5);
